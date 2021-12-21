@@ -31,7 +31,6 @@ workflows:
       - build-and-test
       - hold-dev:
           type: approval
-          name: Approve deployment in Dev
           requires:
               - build-and-test
       - deploy-dev:
