@@ -24,8 +24,10 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
-      - hold:
+      - hold-dev:
           type: approval
           requires:
               - build-and-test
-      - deploy-dev
+      - deploy-dev:
+          requires:
+              - hold-dev
