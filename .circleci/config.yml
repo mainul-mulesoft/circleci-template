@@ -12,7 +12,12 @@ jobs:
           name: Build with Tests
           #command: mvn clean package
           command: echo "Building"
-  
+  hold-dev:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run:
+          command: echo "Approve Deployment in Dev"
   deploy-dev:
     docker:
       - image: cimg/openjdk:11.0
@@ -24,13 +29,12 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
-      - hold:
+      - hold-dev:
           type: approval
           name: Approve deployment in Dev
           requires:
               - build-and-test
       - deploy-dev:
           requires:
-              - hold
+              - hold-dev
 
-              
