@@ -1,0 +1,31 @@
+version: 2.1
+
+jobs:
+  build-and-test:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      # Checkout the code as the first step.
+      - checkout
+      # Use mvn clean and package as the standard maven build phase
+      - run:
+          name: Build with Tests
+          #command: mvn clean package
+          command: echo "Building"
+  
+  deploy-dev:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run: echo "Deploing to Dev"
+      
+workflows:
+  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run.
+    jobs:
+      - build-and-test
+      - hold:
+        type: approval
+        requires:
+            - build-and-test
+      - deploy-dev
