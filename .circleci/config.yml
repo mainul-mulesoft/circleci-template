@@ -5,9 +5,7 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      # Checkout the code as the first step.
       - checkout
-      # Use mvn clean and package as the standard maven build phase
       - run:
           name: Build with Tests
           #command: mvn clean package
@@ -62,6 +60,7 @@ workflows:
       - deploy-dev:
           requires:
               - build-and-test
+          context: anypoint
       - hold-test:
           type: approval
           requires:
@@ -70,6 +69,7 @@ workflows:
       - deploy-test:
           requires:
               - hold-test
+          context: anypoint
       - hold-uat:
           type: approval
           requires:
@@ -77,6 +77,7 @@ workflows:
       - deploy-uat:
           requires:
               - hold-uat
+          context: anypoint
   
   bugfix-workflow:
     when: 
@@ -92,6 +93,7 @@ workflows:
       - deploy-uat:
           requires:
               - hold-uat
+          context: anypoint
 
   release-workflow:
     when: 
@@ -105,3 +107,4 @@ workflows:
       - deploy-prod:
           requires:
               - build-and-test
+          context: anypoint
