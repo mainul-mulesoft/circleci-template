@@ -51,13 +51,20 @@ jobs:
           command: echo "Deploying in UAT"
       #- run:
       #    command: mvn -DskipTests deploy -DmuleDeploy -Dmule.version=4.4.0 -Danypoint.username="$ANYPOINT_USER" -Danypoint.password="$ANYPOINT_PASSWORD" -Dcloudhub.app="hello-world-uat" -Dcloudhub.environment="UAT" -Dcloudhub.bg="Mulesoft" -Dcloudhub.worker="1" -Dcloudhub.workerType="MICRO" -Dmule.env="uat" -Denc.key="$ENC_KEY" -Dcloudhub.region="ap-southeast-2" -Danypoint.platform.client_id="$PLATFORM_CLIENTID" -Danypoint.platform.client_secret="$PLATFORM_CLIENTSECRET"
-            
+  
+  hold-prod:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run:
+          command: echo "Approve Deployment in Prod"          
+  
   deploy-prod:
     docker:
       - image: cimg/openjdk:11.0
     steps:
       - run: 
-          command: echo "Deploying in DEV"
+          command: echo "Deploying in Prod"
       #- run:
       #    command: mvn -DskipTests deploy -DmuleDeploy -Dmule.version=4.4.0 -Danypoint.username="$ANYPOINT_USER" -Danypoint.password="$ANYPOINT_PASSWORD" -Dcloudhub.app="hello-world" -Dcloudhub.environment="PROD" -Dcloudhub.bg="Mulesoft" -Dcloudhub.worker="1" -Dcloudhub.workerType="MICRO" -Dmule.env="prod" -Denc.key="$ENC_KEY" -Dcloudhub.region="ap-southeast-2" -Danypoint.platform.client_id="$PLATFORM_CLIENTID" -Danypoint.platform.client_secret="$PLATFORM_CLIENTSECRET"
       
@@ -90,6 +97,14 @@ workflows:
           requires:
               - hold-uat
           context: Anypoint
+      - hold-prod:
+          type: approval
+          requires:
+              - deploy-uat
+      - deploy-prod:
+          requires:
+              - hold-prod
+          context: Anypoint
   
   bugfix-workflow:
     when: 
@@ -106,17 +121,13 @@ workflows:
           requires:
               - hold-uat
           context: Anypoint
-
-  release-workflow:
-    when: 
-      or:
-        - matches:
-            pattern: "release\\d{1,}/gm" 
-            value: << pipeline.git.branch >> 
-        - equal: [ main, << pipeline.git.branch >> ]
-    jobs:    
-      - build-and-test
+      - hold-prod:
+          type: approval
+          requires:
+              - deploy-uat
       - deploy-prod:
           requires:
-              - build-and-test
+              - hold-prod
           context: Anypoint
+
+  
