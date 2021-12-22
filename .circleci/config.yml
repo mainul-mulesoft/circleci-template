@@ -30,12 +30,7 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - when:
-          condition:
-            equal: [develop, << pipeline.git.branch >>]
-          steps:
-            - run: echo "Deploying to Test"
-      - run: echo ""
+      - run: echo "Deploying to Test"
 
   hold-uat:
     docker:
@@ -48,32 +43,20 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - when:
-          condition:
-            or:
-              - equal: [develop, << pipeline.git.branch >>]
-              - matches:
-                  pattern: "hotfix\\/bug-\\d{1,}/gm" 
-                  value: << pipeline.git.branch >>
-          steps:
-            - run: echo "Deploying to UAT"
-      - run: echo "UAT"
+      - run: echo "Deploying to UAT"
             
   deploy-prod:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - when:
-          condition:
-            equal: [main, << pipeline.git.branch >>]
-          steps:
-            - run: echo "Deploying to Prod"
-      - run: echo ""
+      - run: echo "Deploying to Prod"
+      
       
       
 workflows:
-  app-build-test-deploy: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  dev-workflow: 
+    when: 
+      equal: [ develop, << pipeline.git.branch >> ]
     jobs:
       - build-and-test
       - deploy-dev:
@@ -94,7 +77,31 @@ workflows:
       - deploy-uat:
           requires:
               - hold-uat
-      - deploy-prod:
+  
+  bugfix-workflow:
+    when: 
+      matches:
+        pattern: "hotfix\\/bug-\\d{1,}/gm" 
+        value: << pipeline.git.branch >> 
+    jobs:    
+      - build-and-test
+      - hold-uat:
+          type: approval
           requires:
-              - build-and-test        
+              - build-and-test
+      - deploy-uat:
+          requires:
+              - hold-uat
 
+  release-workflow:
+    when: 
+      or:
+        - matches:
+            pattern: "release\\d{1,}/gm" 
+            value: << pipeline.git.branch >> 
+        - equal: [ main, << pipeline.git.branch >> ]
+    jobs:    
+      - build-and-test
+      - deploy-uat:
+          requires:
+              - build-and-test
