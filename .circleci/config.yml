@@ -12,13 +12,21 @@ jobs:
           name: Build with Tests
           #command: mvn clean package
           command: echo "Building"
-  hold-dev:
+  
+  deploy-dev:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run: echo "Deploying to Dev"
+
+  hold-test:
     docker:
       - image: cimg/openjdk:11.0
     steps:
       - run:
-          command: echo "Approve Deployment in Dev"
-  deploy-dev:
+          command: echo "Approve Deployment in Test"
+  
+  deploy-test:
     docker:
       - image: cimg/openjdk:11.0
     steps:
@@ -26,7 +34,39 @@ jobs:
           condition:
             equal: [develop, << pipeline.git.branch >>]
           steps:
-            - run: echo "Deploing to Dev"
+            - run: echo "Deploying to Test"
+
+  hold-uat:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - run:
+          command: echo "Approve Deployment in UAT"
+  
+  deploy-uat:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - when:
+          condition:
+            or:
+              - equal: [develop, << pipeline.git.branch >>]
+              - matches:
+                  pattern: "hotfix\\/bug-\\d{1,}/gm" 
+                  value: << pipeline.git.branch >>
+          steps:
+            - run: echo "Deploying to UAT"
+  
+  deploy-prod:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - when:
+          condition:
+            equal: [main, << pipeline.git.branch >>]
+              
+          steps:
+            - run: echo "Deploying to Prod"
       
       
 workflows:
@@ -34,11 +74,21 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
-      - hold-dev:
+      - deploy-dev
+      - hold-test:
           type: approval
           requires:
               - build-and-test
-      - deploy-dev:
+              - deploy-dev
+      - deploy-test:
           requires:
-              - hold-dev
+              - hold-test
+      - hold-uat:
+          type: approval
+          requires:
+              - deploy-test
+      - deploy-uat:
+          requires:
+              - hold-uat
+      - deploy-prod        
 
