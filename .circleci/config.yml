@@ -47,7 +47,6 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - run: echo "UAT"
       - when:
           condition:
             or:
@@ -57,7 +56,8 @@ jobs:
                   value: << pipeline.git.branch >>
           steps:
             - run: echo "Deploying to UAT"
-  
+      - run: echo "UAT"
+            
 #  deploy-prod:
 #    docker:
 #      - image: cimg/openjdk:11.0
