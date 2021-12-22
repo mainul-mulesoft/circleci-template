@@ -76,7 +76,9 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
-      - deploy-dev
+      - deploy-dev:
+          requires:
+              - build-and-test
       - hold-test:
           type: approval
           requires:
@@ -92,5 +94,7 @@ workflows:
       - deploy-uat:
           requires:
               - hold-uat
-      - deploy-prod        
+      - deploy-prod:
+          requires:
+              - build-and-test        
 
