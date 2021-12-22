@@ -81,7 +81,7 @@ workflows:
   bugfix-workflow:
     when: 
       matches:
-        pattern: "hotfix\\/bug-*+" 
+        pattern: "hotfix\\S+" 
         value: << pipeline.git.branch >> 
     jobs:    
       - build-and-test
