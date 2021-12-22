@@ -35,6 +35,7 @@ jobs:
             equal: [develop, << pipeline.git.branch >>]
           steps:
             - run: echo "Deploying to Test"
+      - run: echo ""
 
   hold-uat:
     docker:
@@ -58,15 +59,16 @@ jobs:
             - run: echo "Deploying to UAT"
       - run: echo "UAT"
             
-#  deploy-prod:
-#    docker:
-#      - image: cimg/openjdk:11.0
-#    steps:
-#      - when:
-#          condition:
-#            equal: [main, << pipeline.git.branch >>]
-#          steps:
-#            - run: echo "Deploying to Prod"
+  deploy-prod:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - when:
+          condition:
+            equal: [main, << pipeline.git.branch >>]
+          steps:
+            - run: echo "Deploying to Prod"
+      - run: echo ""
       
       
 workflows:
@@ -90,5 +92,5 @@ workflows:
       - deploy-uat:
           requires:
               - hold-uat
-      #- deploy-prod        
+      - deploy-prod        
 
