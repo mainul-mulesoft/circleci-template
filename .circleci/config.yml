@@ -15,7 +15,8 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - run: echo "Deploying to Dev"
+      - run: 
+          command: echo "$ANYPOINT_USER"
 
   hold-test:
     docker:
