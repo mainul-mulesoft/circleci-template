@@ -22,7 +22,12 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - run: echo "Deploing to Dev"
+      - when:
+          condition:
+            equal: [develop, << pipeline.git.branch >>]
+          steps:
+            - run: echo "Deploing to Dev"
+      
       
 workflows:
   app-build-test-deploy: # This is the name of the workflow, feel free to change it to better match your workflow.
