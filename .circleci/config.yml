@@ -61,7 +61,7 @@ workflows:
       - deploy-dev:
           requires:
               - build-and-test
-          context: anypoint
+          context: Anypoint
       - hold-test:
           type: approval
           requires:
@@ -70,7 +70,7 @@ workflows:
       - deploy-test:
           requires:
               - hold-test
-          context: anypoint
+          context: Anypoint
       - hold-uat:
           type: approval
           requires:
@@ -78,7 +78,7 @@ workflows:
       - deploy-uat:
           requires:
               - hold-uat
-          context: anypoint
+          context: Anypoint
   
   bugfix-workflow:
     when: 
@@ -94,7 +94,7 @@ workflows:
       - deploy-uat:
           requires:
               - hold-uat
-          context: anypoint
+          context: Anypoint
 
   release-workflow:
     when: 
@@ -108,4 +108,4 @@ workflows:
       - deploy-prod:
           requires:
               - build-and-test
-          context: anypoint
+          context: Anypoint
