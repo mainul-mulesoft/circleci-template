@@ -64,7 +64,6 @@ jobs:
       - when:
           condition:
             equal: [main, << pipeline.git.branch >>]
-              
           steps:
             - run: echo "Deploying to Prod"
       
