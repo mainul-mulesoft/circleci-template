@@ -16,7 +16,9 @@ jobs:
       - image: cimg/openjdk:11.0
     steps:
       - run: 
-          command: echo "$ANYPOINT_USER"
+          command: echo "Deploying in DEV"
+      #- run:
+      #    command: mvn -DskipTests deploy -DmuleDeploy -Dmule.version=4.4.0 -Danypoint.username="$ANYPOINT_USER" -Danypoint.password="$ANYPOINT_PASSWORD" -Dcloudhub.app="hello-world-dev" -Dcloudhub.environment="DEV" -Dcloudhub.bg="Mulesoft" -Dcloudhub.worker="1" -Dcloudhub.workerType="MICRO" -Dmule.env="dev" -Denc.key="$ENC_KEY" -Dcloudhub.region="ap-southeast-2" -Danypoint.platform.client_id="$PLATFORM_CLIENTID" -Danypoint.platform.client_secret="$PLATFORM_CLIENTSECRET"
 
   hold-test:
     docker:
@@ -29,7 +31,10 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - run: echo "Deploying to Test"
+      - run: 
+          command: echo "Deploying in TEST"
+      #- run:
+      #    command: mvn -DskipTests deploy -DmuleDeploy -Dmule.version=4.4.0 -Danypoint.username="$ANYPOINT_USER" -Danypoint.password="$ANYPOINT_PASSWORD" -Dcloudhub.app="hello-world-test" -Dcloudhub.environment="TEST" -Dcloudhub.bg="Mulesoft" -Dcloudhub.worker="1" -Dcloudhub.workerType="MICRO" -Dmule.env="test" -Denc.key="$ENC_KEY" -Dcloudhub.region="ap-southeast-2" -Danypoint.platform.client_id="$PLATFORM_CLIENTID" -Danypoint.platform.client_secret="$PLATFORM_CLIENTSECRET"
 
   hold-uat:
     docker:
@@ -42,13 +47,19 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - run: echo "Deploying to UAT"
+      - run: 
+          command: echo "Deploying in UAT"
+      #- run:
+      #    command: mvn -DskipTests deploy -DmuleDeploy -Dmule.version=4.4.0 -Danypoint.username="$ANYPOINT_USER" -Danypoint.password="$ANYPOINT_PASSWORD" -Dcloudhub.app="hello-world-uat" -Dcloudhub.environment="UAT" -Dcloudhub.bg="Mulesoft" -Dcloudhub.worker="1" -Dcloudhub.workerType="MICRO" -Dmule.env="uat" -Denc.key="$ENC_KEY" -Dcloudhub.region="ap-southeast-2" -Danypoint.platform.client_id="$PLATFORM_CLIENTID" -Danypoint.platform.client_secret="$PLATFORM_CLIENTSECRET"
             
   deploy-prod:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - run: echo "Deploying to Prod"
+      - run: 
+          command: echo "Deploying in DEV"
+      #- run:
+      #    command: mvn -DskipTests deploy -DmuleDeploy -Dmule.version=4.4.0 -Danypoint.username="$ANYPOINT_USER" -Danypoint.password="$ANYPOINT_PASSWORD" -Dcloudhub.app="hello-world" -Dcloudhub.environment="PROD" -Dcloudhub.bg="Mulesoft" -Dcloudhub.worker="1" -Dcloudhub.workerType="MICRO" -Dmule.env="prod" -Denc.key="$ENC_KEY" -Dcloudhub.region="ap-southeast-2" -Danypoint.platform.client_id="$PLATFORM_CLIENTID" -Danypoint.platform.client_secret="$PLATFORM_CLIENTSECRET"
       
       
       
