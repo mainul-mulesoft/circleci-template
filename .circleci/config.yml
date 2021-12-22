@@ -47,6 +47,7 @@ jobs:
     docker:
       - image: cimg/openjdk:11.0
     steps:
+      - run: echo "UAT"
       - when:
           condition:
             or:
