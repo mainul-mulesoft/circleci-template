@@ -57,15 +57,15 @@ jobs:
           steps:
             - run: echo "Deploying to UAT"
   
-  deploy-prod:
-    docker:
-      - image: cimg/openjdk:11.0
-    steps:
-      - when:
-          condition:
-            equal: [main, << pipeline.git.branch >>]
-          steps:
-            - run: echo "Deploying to Prod"
+#  deploy-prod:
+#    docker:
+#      - image: cimg/openjdk:11.0
+#    steps:
+#      - when:
+#          condition:
+#            equal: [main, << pipeline.git.branch >>]
+#          steps:
+#            - run: echo "Deploying to Prod"
       
       
 workflows:
@@ -89,5 +89,5 @@ workflows:
       - deploy-uat:
           requires:
               - hold-uat
-      - deploy-prod        
+      #- deploy-prod        
 
